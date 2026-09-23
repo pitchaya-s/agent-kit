@@ -3,35 +3,37 @@
 ```bash
 git clone https://github.com/pitchaya-s/agent-kit.git
 cd agent-kit
-bash scripts/install.sh
 ```
 
-Claude Code:
-
 ```bash
+# Codex
+bash scripts/install.sh --agent codex
+
+# Claude Code
 bash scripts/install.sh --agent claude
-```
 
-Shared + Claude Code:
+# OpenCode
+bash scripts/install.sh --agent opencode
 
-```bash
+# Gemini CLI
+bash scripts/install.sh --agent gemini
+
+# GitHub Copilot
+bash scripts/install.sh --agent copilot
+
+# Cursor
+bash scripts/install.sh --agent cursor
+
+# All agent-specific locations
 bash scripts/install.sh --agent all
+
+# Shared Agent Skills location
+bash scripts/install.sh --agent shared
 ```
 
 # Uninstall
 
 ```bash
-bash scripts/uninstall.sh
-```
-
-Claude Code:
-
-```bash
-bash scripts/uninstall.sh --agent claude
-```
-
-Shared + Claude Code:
-
-```bash
-bash scripts/uninstall.sh --agent all
+# Replace <agent> with codex, claude, opencode, gemini, copilot, cursor, shared, or all
+bash scripts/uninstall.sh --agent <agent>
 ```

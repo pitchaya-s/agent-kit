@@ -3,12 +3,13 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 SKILLS_DIR="$ROOT/skills"
-AGENT="shared"
+AGENT=""
 CUSTOM_TARGET=""
 
 usage() {
   cat <<'USAGE'
-Usage: bash scripts/uninstall.sh [--agent shared|codex|opencode|gemini|copilot|cursor|claude|all] [--target DIR]
+Usage: bash scripts/uninstall.sh --agent <codex|claude|opencode|gemini|copilot|cursor|shared|all>
+       bash scripts/uninstall.sh --target <directory>
 USAGE
 }
 
@@ -36,12 +37,19 @@ while [ "$#" -gt 0 ]; do
   esac
 done
 
-if [ -n "$CUSTOM_TARGET" ] && [ "$AGENT" != "shared" ]; then
-  echo "error: use either --target or --agent, not both" >&2
+if [ -n "$AGENT" ] && [ -n "$CUSTOM_TARGET" ]; then
+  echo "error: use either --agent or --target, not both" >&2
+  exit 2
+fi
+
+if [ -z "$AGENT" ] && [ -z "$CUSTOM_TARGET" ]; then
+  echo "error: choose an agent with --agent, or provide --target" >&2
+  usage >&2
   exit 2
 fi
 
 TARGETS=()
+
 add_target() {
   local candidate="$1"
   local existing
@@ -51,26 +59,31 @@ add_target() {
   TARGETS+=("$candidate")
 }
 
-if [ -n "$CUSTOM_TARGET" ]; then
-  add_target "$CUSTOM_TARGET"
-else
-  case "$AGENT" in
-    shared|codex|opencode|gemini|copilot|cursor)
-      add_target "$HOME/.agents/skills"
-      ;;
-    claude)
-      add_target "$HOME/.claude/skills"
-      ;;
-    all)
-      add_target "$HOME/.agents/skills"
-      add_target "$HOME/.claude/skills"
-      ;;
+add_agent_target() {
+  case "$1" in
+    codex)    add_target "$HOME/.codex/skills" ;;
+    claude)   add_target "$HOME/.claude/skills" ;;
+    opencode) add_target "$HOME/.config/opencode/skills" ;;
+    gemini)   add_target "$HOME/.gemini/skills" ;;
+    copilot)  add_target "$HOME/.copilot/skills" ;;
+    cursor)   add_target "$HOME/.cursor/skills" ;;
+    shared)   add_target "$HOME/.agents/skills" ;;
     *)
-      echo "error: unsupported agent: $AGENT" >&2
+      echo "error: unsupported agent: $1" >&2
       usage >&2
       exit 2
       ;;
   esac
+}
+
+if [ -n "$CUSTOM_TARGET" ]; then
+  add_target "$CUSTOM_TARGET"
+elif [ "$AGENT" = "all" ]; then
+  for agent in codex claude opencode gemini copilot cursor; do
+    add_agent_target "$agent"
+  done
+else
+  add_agent_target "$AGENT"
 fi
 
 SKILLS=()
