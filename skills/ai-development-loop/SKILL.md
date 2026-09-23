@@ -1,6 +1,6 @@
 ---
 name: ai-development-loop
-description: Use when improving an AI system through experiments: prompts, agents, RAG, inference, fine-tuning, training recipes, or model architecture. Drive changes with baselines, failure analysis, explicit hypotheses, controlled experiments, evals, and keep/revert decisions.
+description: "Use when improving an AI system through experiments: prompts, agents, RAG, inference, fine-tuning, training recipes, or model architecture. Drive changes with baselines, failure analysis, explicit hypotheses, controlled experiments, evals, and keep/revert decisions."
 ---
 
 # AI Development Loop
